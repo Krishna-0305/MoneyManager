@@ -39,7 +39,7 @@ class MoneyManager extends Component {
 
   formHangler = e => {
     e.preventDefault()
-    const {transactionCategory, amountInput, titleInput} = this.state
+    const {transactionCategory, amountInput, titleInput,transactionsList} = this.state
     const amountVal = parseFloat(amountInput) || 0
 
     if (amountVal <= 0) {
@@ -54,11 +54,28 @@ class MoneyManager extends Component {
       title: titleInput,
     }
 
+    const updatedTransactionList= [...transactionsList, newHistory]
+
+    const updatedIncome = updatedTransactionList.reduce((sum,transaction)=>{
+        if(transaction.category==='INCOME'){
+            return sum+=Number(transaction.amount||0)
+        }
+        return sum
+    },0)
+
+    const updatedExpenses = updatedTransactionList.reduce((sum,transaction)=>{
+        if(transaction.category==='EXPENSES'){
+            return sum+=Number(transaction.amount||0)
+        }
+        return sum
+    },0)
+
+
     switch (transactionCategory) {
       case 'INCOME':
         this.setState(prev => ({
-          totalBalance: prev.totalBalance + amountVal,
-          totalIncome: prev.totalIncome + amountVal,
+          totalBalance: updatedIncome-updatedExpenses,
+          totalIncome: updatedIncome,
           titleInput: '',
           amountInput: '',
           transactionsList: [...prev.transactionsList, newHistory],
@@ -66,8 +83,8 @@ class MoneyManager extends Component {
         break
       case 'EXPENSES':
         this.setState(prev => ({
-          totalBalance: prev.totalBalance - amountVal,
-          totalExpenses: prev.totalExpenses + amountVal,
+          totalBalance: updatedIncome-updatedExpenses,
+          totalExpenses: updatedExpenses,
           titleInput: '',
           amountInput: '',
           transactionsList: [...prev.transactionsList, newHistory],
@@ -79,25 +96,30 @@ class MoneyManager extends Component {
   }
 
   onDelete = historyDetails => {
-    const {category, amount, id} = historyDetails
+    const {id} = historyDetails
     this.setState(prev => {
-      let updatedBalance = prev.totalBalance
-      let updatedIncome = prev.totalIncome
-      let updatedExpenses = prev.totalExpenses
+      let updatedIncome = 0
+      let updatedExpenses = 0
       const updatedTransactionList = prev.transactionsList.filter(
         eachHistory => eachHistory.id !== id,
       )
 
-      if (category === 'INCOME') {
-        updatedBalance -= amount
-        updatedIncome -= amount
-      } else if (category === 'EXPENSES') {
-        updatedBalance += amount
-        updatedExpenses -= amount
-      }
+      updatedIncome = updatedTransactionList.reduce((sum,transaction)=>{
+        if(transaction.category==='INCOME'){
+            return sum+=Number(transaction.amount||0)
+        }
+        return sum
+    },0)
+
+    updatedExpenses = updatedTransactionList.reduce((sum,transaction)=>{
+        if(transaction.category==='EXPENSES'){
+            return sum+=Number(transaction.amount||0)
+        }
+        return sum
+    },0)
 
       return {
-        totalBalance: Math.max(updatedBalance, 0),
+        totalBalance: updatedIncome-updatedExpenses,
         totalIncome: Math.max(updatedIncome, 0),
         totalExpenses: Math.max(updatedExpenses, 0),
         transactionsList: updatedTransactionList,
