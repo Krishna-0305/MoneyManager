@@ -1,0 +1,45 @@
+.money-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+.card {
+  display: flex;
+  flex: 1;
+  padding: 10px 20px 5px 10px;
+  border-radius: 12px;
+  align-items: center;
+  margin-right: 10px;
+}
+.card .card-content {
+  margin-left: 10px;
+}
+.card img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.blnc-crd {
+  background-color: #ecfccb;
+  border: 1px solid #84cc16;
+}
+.blnc-crd img {
+  background-color: #84cc16;
+}
+
+.incm-crd {
+  background-color: #cffafe;
+  border: 1px solid #06b6d4;
+}
+.incm-crd img {
+  background-color: #06b6d4;
+}
+
+.exps-crd {
+  background-color: #ede9fe;
+  border: 1px solid #7c3aed;
+}
+.exps-crd img {
+  background-color: #7c3aed;
+}
